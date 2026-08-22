@@ -37,15 +37,15 @@ session to `cookies.json` so subsequent refreshes can use the fast tier-2 client
 - `scripts/install_skill.py` — installs the `run-edersa-portal` agent skill from this repository
 - `.env.example` — configuration template (copy to `.env`)
 
-## Install the agent skill from private GitHub
+## Install the agent skill from GitHub
 
 Full agent-facing installation instructions are in
 [`docs/INSTALL_AGENT_SKILL.md`](docs/INSTALL_AGENT_SKILL.md).
 
-Quick start, after GitHub access is configured:
+Quick start; the repository is public, so no GitHub credential is required:
 
 ```bash
-gh repo clone cjbarroso/edersa edersa
+git clone --depth 1 --branch master https://github.com/cjbarroso/edersa.git edersa
 python edersa/scripts/install_skill.py --repo edersa
 ```
 

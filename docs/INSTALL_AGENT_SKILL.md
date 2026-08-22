@@ -6,32 +6,31 @@ This repository contains the reusable `run-edersa-portal` skill at:
 .agents/skills/run-edersa-portal
 ```
 
-The procedure below is intended for an AI agent with GitHub access to the private
+The procedure below is intended for an AI agent that can reach the public
 repository `cjbarroso/edersa`.
 
 ## Prerequisites
 
 - Git is installed.
-- The agent can authenticate to GitHub and read `cjbarroso/edersa`.
+- The agent can reach GitHub over the network. No GitHub credential is required.
 - Python 3.10 or newer is available for the installer.
 
-The GitHub credential is used only to clone the repository. The installer does not
-read EDERSA credentials, `.env`, `cookies.json`, or any portal session data.
+The installer does not read EDERSA credentials, `.env`, `cookies.json`, or any
+portal session data.
 
 ## Install from GitHub
 
-With the GitHub CLI:
-
-```bash
-gh repo clone cjbarroso/edersa edersa
-python edersa/scripts/install_skill.py --repo edersa
-```
-
-If the agent uses Git credentials without the GitHub CLI, clone the same repository
-with Git and run the installer from the checkout:
+With Git:
 
 ```bash
 git clone --depth 1 --branch master https://github.com/cjbarroso/edersa.git edersa
+python edersa/scripts/install_skill.py --repo edersa
+```
+
+The GitHub CLI is optional. If it is already available, this is equivalent:
+
+```bash
+gh repo clone cjbarroso/edersa edersa
 python edersa/scripts/install_skill.py --repo edersa
 ```
 
@@ -87,7 +86,7 @@ submit payments or modify portal data.
 
 ## Troubleshooting
 
-- `gh repo clone` fails: run `gh auth status` and verify that the authenticated account can read `cjbarroso/edersa`.
-- `git clone` fails: verify the agent's GitHub credential helper and repository access.
+- `gh repo clone` fails: use the public HTTPS `git clone` command or verify the network connection.
+- `git clone` fails: verify the network connection and that the agent can reach GitHub.
 - The target already exists: rerun with `--force` only when replacing that exact skill installation is intended.
 - The agent does not discover the skill: confirm that `SKILL.md` is directly under the installed `run-edersa-portal` directory and start a fresh agent session.
