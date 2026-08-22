@@ -1,6 +1,6 @@
 # Install the EDERSA agent skill
 
-This repository contains the reusable `run-edersa-portal` skill at:
+This repository contains the portable `run-edersa-portal` skill at:
 
 ```text
 .agents/skills/run-edersa-portal
@@ -17,6 +17,10 @@ repository `cjbarroso/edersa`.
 
 The installer does not read EDERSA credentials, `.env`, `cookies.json`, or any
 portal session data.
+
+The canonical payload is the directory containing `SKILL.md`. The optional
+`agents/openai.yaml` file provides interface metadata for hosts that support it;
+Hermes and other agents may ignore that file.
 
 ## Install from GitHub
 
@@ -39,20 +43,29 @@ copies the complete skill, including `agents/openai.yaml`.
 
 ## Installation location
 
-By default, the skill is installed at:
+When no destination is provided, the installer checks these locations in order:
 
-1. `$CODEX_HOME/skills/run-edersa-portal` when `CODEX_HOME` is set.
-2. `~/.codex/skills/run-edersa-portal` otherwise.
+1. `AGENT_SKILLS_DIR`.
+2. `CODEX_SKILLS_DIR`.
+3. `$CODEX_HOME/skills` when `CODEX_HOME` is set.
+4. An existing `~/.codex/skills` directory.
+5. `~/.agents/skills` as the generic fallback.
 
-For another agent or a custom skills directory, provide the parent directory:
+For Hermes or another agent with a custom skills directory, always pass the
+configured parent directory explicitly:
 
 ```bash
 python edersa/scripts/install_skill.py \
   --repo edersa \
-  --skills-dir /path/to/agent/skills
+  --skills-dir /path/to/hermes/skills
 ```
 
-The final directory will be `/path/to/agent/skills/run-edersa-portal`.
+The final directory will be `/path/to/hermes/skills/run-edersa-portal`.
+
+If an agent loads project-local skills, no global installation is needed: configure
+its loader to read `.agents/skills/run-edersa-portal/SKILL.md` from the checkout.
+If it has no skill registry, load that file as the agent's task instructions. The
+root `AGENTS.md` points agents to the same canonical file.
 
 ## Update an existing installation
 
@@ -68,18 +81,15 @@ Without `--force`, the installer stops instead of overwriting an existing skill.
 
 ## Verify the installation
 
-Check that the skill entry point exists:
+Check that the skill entry point exists in the selected skills directory:
 
 ```bash
-test -f ~/.codex/skills/run-edersa-portal/SKILL.md
+test -f /path/to/agent/skills/run-edersa-portal/SKILL.md
 ```
 
-For a custom destination, replace the path with the value passed to `--skills-dir`.
-Start a new agent session or reload its skills, then invoke:
-
-```text
-$run-edersa-portal
-```
+Start a new agent session or reload its skills. Ask the agent for EDERSA invoices
+or pending debt; it should read `SKILL.md` and run the repository's normal entry
+points rather than depend on a vendor-specific command.
 
 The skill runs the repository's read-only EDERSA automation. It must not be used to
 submit payments or modify portal data.
@@ -89,4 +99,4 @@ submit payments or modify portal data.
 - `gh repo clone` fails: use the public HTTPS `git clone` command or verify the network connection.
 - `git clone` fails: verify the network connection and that the agent can reach GitHub.
 - The target already exists: rerun with `--force` only when replacing that exact skill installation is intended.
-- The agent does not discover the skill: confirm that `SKILL.md` is directly under the installed `run-edersa-portal` directory and start a fresh agent session.
+- The agent does not discover the skill: confirm that `SKILL.md` is directly under the installed `run-edersa-portal` directory, configure the agent's skill loader, and start a fresh session.

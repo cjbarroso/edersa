@@ -35,12 +35,17 @@ session to `cookies.json` so subsequent refreshes can use the fast tier-2 client
 - `login.py` — browser login/handoff; writes `cookies.json`, prints the account key
 - `edersa_client.py` — browser-free refresh from `cookies.json` → JSON
 - `scripts/install_skill.py` — installs the `run-edersa-portal` agent skill from this repository
+- `AGENTS.md` — adapter for agents that load repository instructions, including custom Hermes deployments
 - `.env.example` — configuration template (copy to `.env`)
 
 ## Install the agent skill from GitHub
 
 Full agent-facing installation instructions are in
 [`docs/INSTALL_AGENT_SKILL.md`](docs/INSTALL_AGENT_SKILL.md).
+
+The skill is agent-neutral. For Hermes or another agent with a custom skill root,
+pass that root with `--skills-dir`; no vendor-specific directory or invocation is
+required.
 
 Quick start; the repository is public, so no GitHub credential is required:
 

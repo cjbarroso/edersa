@@ -7,6 +7,18 @@ description: Run this repository's read-only EDERSA portal automation to authent
 
 Use this skill when the user asks for EDERSA invoices, debt, unpaid bills, account billing data, or a JSON refresh from this repository.
 
+This is an agent-neutral instruction bundle. It requires only shell access to the
+repository, Python, and network access to the EDERSA portals; it does not depend on
+Codex, a specific model, a proprietary tool, or a `$skill-name` invocation syntax.
+Agents that do not discover skills automatically should load this file explicitly.
+
+## Agent compatibility
+
+- Treat this `SKILL.md` as the canonical runtime contract. The root `AGENTS.md` is a short adapter for agents that load repository instructions instead of skills.
+- Hermes and other agents with a configurable skills root should install this directory with `scripts/install_skill.py --skills-dir <agent-skills-root>` or point their loader directly at `.agents/skills/run-edersa-portal`.
+- `agents/openai.yaml` is optional interface metadata for compatible hosts. Other agents may ignore it; the execution instructions are entirely in this file.
+- Invoke the project with ordinary shell commands and report the resulting JSON summary. Do not assume `$run-edersa-portal`, `gh`, or `CODEX_HOME` exists at runtime.
+
 ## Scope and safety
 
 - Work from the repository root, where `get_invoices.py`, `login.py`, and `edersa_client.py` are located.

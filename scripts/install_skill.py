@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install the EDERSA Codex skill from a GitHub checkout."""
+"""Install the portable EDERSA agent skill from a GitHub checkout."""
 
 from __future__ import annotations
 
@@ -8,7 +8,6 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
-import sys
 import tempfile
 
 
@@ -36,8 +35,9 @@ def parse_args() -> argparse.Namespace:
         "--skills-dir",
         type=Path,
         help=(
-            "Parent directory for installed skills. Defaults to CODEX_SKILLS_DIR, "
-            "then CODEX_HOME/skills, then ~/.codex/skills."
+            "Parent directory for installed skills. Defaults to AGENT_SKILLS_DIR, "
+            "then CODEX_SKILLS_DIR, CODEX_HOME/skills, an existing ~/.codex/skills, "
+            "or ~/.agents/skills."
         ),
     )
     parser.add_argument(
@@ -51,11 +51,16 @@ def parse_args() -> argparse.Namespace:
 def resolve_skills_dir(explicit: Path | None) -> Path:
     if explicit:
         return explicit.expanduser()
+    if configured := os.environ.get("AGENT_SKILLS_DIR"):
+        return Path(configured).expanduser()
     if configured := os.environ.get("CODEX_SKILLS_DIR"):
         return Path(configured).expanduser()
     if codex_home := os.environ.get("CODEX_HOME"):
         return Path(codex_home).expanduser() / "skills"
-    return Path.home() / ".codex" / "skills"
+    codex_skills = Path.home() / ".codex" / "skills"
+    if codex_skills.is_dir():
+        return codex_skills
+    return Path.home() / ".agents" / "skills"
 
 
 def clone_repository(repo: str, ref: str, checkout: Path) -> None:
@@ -71,8 +76,8 @@ def clone_repository(repo: str, ref: str, checkout: Path) -> None:
         raise SystemExit("git is required to install this skill.") from exc
     except subprocess.CalledProcessError as exc:
         raise SystemExit(
-            "Could not clone the repository. Verify GitHub credentials and access "
-            f"to the requested ref '{ref}'."
+            "Could not clone the repository. Verify network/repository access and "
+            f"the requested ref '{ref}'."
         ) from exc
 
 
