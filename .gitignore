@@ -1,0 +1,20 @@
+# Secrets & session state — NEVER commit
+.env
+cookies.json
+*.cookies
+probe_body.html
+login.html
+*_gxstate.json
+
+# Generated data outputs (contain personal billing data)
+debt.json
+all.json
+pending.json
+invoices*.json
+*.debt.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

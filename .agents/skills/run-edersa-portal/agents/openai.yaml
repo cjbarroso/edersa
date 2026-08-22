@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run EDERSA Portal"
+  short_description: "Fetch EDERSA invoices and debt as JSON"
+  default_prompt: "Use $run-edersa-portal to fetch my EDERSA invoices or pending debt as JSON."
